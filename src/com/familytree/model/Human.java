@@ -1,3 +1,12 @@
+package com.familytree.model;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
@@ -131,6 +140,9 @@ public class Human implements Serializable {
     public void setDeathDate(LocalDate deathDate) {
         this.deathDate = deathDate;
     }
+
+
+
     public String getInfo() {
         StringBuilder sb = new StringBuilder();
         sb.append("id: ");
@@ -144,19 +156,20 @@ public class Human implements Serializable {
         sb.append(" место рождения: ");
         sb.append(placeBirth);
         sb.append(", пол: ");
-        sb.append(getGender());
-        sb.append(", возраст");
+        sb.append(gender);
+        sb.append(", возраст: ");
         sb.append(getLifespan());
         sb.append(", супруг(а): ");
-        sb.append(spouse);
+        sb.append(spouse != null ? spouse.getName() : "null");
         sb.append(", мать: ");
-        sb.append(mother);
+        sb.append(mother != null ? mother.getName() : "null");
         sb.append(", отец: ");
-        sb.append(father);
+        sb.append(father != null ? father.getName() : "null");
         sb.append(", ");
         sb.append(getChildrenInfo());
         return sb.toString();
     }
+
     public String getChildrenInfo(){
         StringBuilder res = new StringBuilder();
         res.append("дети: ");
