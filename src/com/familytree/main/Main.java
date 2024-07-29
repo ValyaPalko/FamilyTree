@@ -8,6 +8,7 @@ import com.familytree.tree.FamilyTree;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 public class Main {
     public static void main(String[] args) {
@@ -29,28 +30,28 @@ public class Main {
         FileOperations fileHandler = new FileHandler();
         FamilyTree familyTree = new FamilyTree(fileHandler);
 
-        familyTree.addHuman(mother);
-        familyTree.addHuman(father);
-        familyTree.addHuman(child);
+        familyTree.addElement(mother);
+        familyTree.addElement(father);
+        familyTree.addElement(child);
 
-        familyTree.printAllHumans();
+        familyTree.printAllElements();
 
         System.out.println("\nСортировка по имени:");
-        familyTree.sortByName();
-        familyTree.printAllHumans();
+        familyTree.sortByName(Comparator.comparing(Human::getName));
+        familyTree.printAllElements();
 
         System.out.println("\nСортировка по дате рождения:");
-        familyTree.sortByBirthDate();
-        familyTree.printAllHumans();
+        familyTree.sortByBirthDate(Comparator.comparing(Human::getBirthDate));
+        familyTree.printAllElements();
 
         String filename = "data/family_tree.ser";
 
         familyTree.saveToFile(filename);
 
-        FamilyTree loadedFamilyTree = new FamilyTree(fileHandler);
-        loadedFamilyTree.loadFromFile(filename);
+        FamilyTree<Human> loadedFamilyTree = new FamilyTree<>(fileHandler);
+        //loadedFamilyTree.loadFromFile(filename);
 
 
-       // loadedFamilyTree.printAllHumans();
+       loadedFamilyTree.printAllElements();
     }
 }

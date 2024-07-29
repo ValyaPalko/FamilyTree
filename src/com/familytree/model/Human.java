@@ -141,7 +141,23 @@ public class Human implements Serializable {
         this.deathDate = deathDate;
     }
 
-
+    @Override
+    public String toString() {
+        return "Human{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", gender=" + gender +
+                ", birthDate=" + birthDate +
+                ", deathDate=" + deathDate +
+                ", countryBirth='" + countryBirth + '\'' +
+                ", placeBirth='" + placeBirth + '\'' +
+                ", mother=" + (mother != null ? mother.getName() : "null") +
+                ", father=" + (father != null ? father.getName() : "null") +
+                ", spouse=" + (spouse != null ? spouse.getName() : "null") +
+                ", children=" + getChildrenInfo() +
+                '}';
+    }
 
     public String getInfo() {
         StringBuilder sb = new StringBuilder();

@@ -3,6 +3,7 @@ package com.familytree.tree;
 import com.familytree.file.FileOperations;
 import com.familytree.model.Human;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,44 +11,46 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class FamilyTree implements Iterable<Human>, Serializable {
+//public class FamilyTree implements Iterable<Human>, Serializable {
+public class FamilyTree<T> implements Iterable<T>, Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
-    private List<Human> humans;
-    private FileOperations fileHandler;
+    private List<T> elements;
+    private final FileOperations<T> fileHandler;
 
-    public FamilyTree(FileOperations fileHandler) {
-        this.humans = new ArrayList<>();
+    public FamilyTree(FileOperations<T> fileHandler) {
+        this.elements = new ArrayList<>();
         this.fileHandler = fileHandler;
     }
 
-    public void addHuman(Human human) {
-        humans.add(human);
+    public void addElement(T element) {
+        elements.add(element);
     }
 
     @Override
-    public Iterator<Human> iterator() {
-        return humans.iterator();
+    public Iterator<T> iterator() {
+        return elements.iterator();
     }
 
-    public void printAllHumans() {
-        for (Human human : humans) {
-            System.out.println(human.getInfo());
+    public void printAllElements() {
+        for (T element : elements) {
+            System.out.println(element);
         }
     }
 
     public void saveToFile(String filename) {
-        fileHandler.saveToFile(filename, humans);
+        fileHandler.saveToFile(filename, elements);
     }
 
     public void loadFromFile(String filename) {
-        humans = fileHandler.loadFromFile(filename);
+        elements = fileHandler.loadFromFile(filename);
     }
 
-    public void sortByName() {
-        Collections.sort(humans, Comparator.comparing(Human::getName));
+    public void sortByName(Comparator<T> comparator) {
+        Collections.sort(elements, comparator);
     }
 
-    public void sortByBirthDate() {
-        Collections.sort(humans, Comparator.comparing(Human::getBirthDate));
+    public void sortByBirthDate(Comparator<T> comparator) {
+        Collections.sort(elements, comparator);
     }
 }
