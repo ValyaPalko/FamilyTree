@@ -1,14 +1,23 @@
+//package com.familytree.main;
+//
+//import com.familytree.file.FileHandler;
+//import com.familytree.file.FileOperations;
+//import com.familytree.model.Gender;
+//import com.familytree.model.Human;
+//import com.familytree.model.FamilyTree;
+//
+//import java.io.File;
+//import java.time.LocalDate;
+//import java.util.Comparator;
+
 package com.familytree.main;
 
-import com.familytree.file.FileHandler;
-import com.familytree.file.FileOperations;
 import com.familytree.model.Gender;
 import com.familytree.model.Human;
-import com.familytree.tree.FamilyTree;
-
-import java.io.File;
-import java.time.LocalDate;
-import java.util.Comparator;
+import com.familytree.model.FamilyTree;
+import com.familytree.presenter.FamilyTreePresenter;
+import com.familytree.view.ConsoleFamilyTreeView;
+import com.familytree.view.FamilyTreeView;
 
 public class Main {
     public static void main(String[] args) {

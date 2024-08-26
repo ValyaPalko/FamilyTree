@@ -1,7 +1,6 @@
-package com.familytree.tree;
+package com.familytree.model;
 
 import com.familytree.file.FileOperations;
-import com.familytree.model.Human;
 
 import java.io.Serial;
 import java.io.Serializable;
