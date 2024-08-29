@@ -1,37 +1,47 @@
 package com.familytree.presenter;
 
-import com.familytree.model.FamilyTree;
 import com.familytree.model.Human;
+import com.familytree.service.FamilyTreeService;
 import com.familytree.view.FamilyTreeView;
 
-import java.util.List;
-
 public class FamilyTreePresenter {
-    private FamilyTree<Human> familyTree;
+    private FamilyTreeService service;
     private FamilyTreeView view;
 
-    public FamilyTreePresenter(FamilyTree<Human> familyTree, FamilyTreeView view) {
-        this.familyTree = familyTree;
+    public FamilyTreePresenter(FamilyTreeService service, FamilyTreeView view) {
+        this.service = service;
         this.view = view;
     }
 
     public void addHuman(Human human) {
-        familyTree.addElement(human);
+        service.addHuman(human);
         view.showMessage(human.getName() + " добавлен(а) в семейное древо.");
     }
 
+    public void createRelationship(Human parent, Human child) {
+        service.createRelationship(parent, child);
+        view.showMessage("Родственная связь установлена между " + parent.getName() + " и " + child.getName());
+    }
+
     public void sortByName() {
-        familyTree.sortByName();
+        service.sortByName();
         view.showMessage("Семейное древо отсортировано по имени.");
     }
 
     public void sortByBirthDate() {
-        familyTree.sortByBirthDate();
+        service.sortByBirthDate();
         view.showMessage("Семейное древо отсортировано по дате рождения.");
     }
 
+    public void saveToFile(String fileName) {
+        service.saveToFile(fileName);
+    }
+
+    public void loadFromFile(String fileName) {
+        service.loadFromFile(fileName);
+    }
+
     public void displayFamilyTree() {
-        List<Human> members = familyTree.getMembers();
-        view.displayFamilyTree(members);
+        view.displayFamilyTree(service.getFamilyTree().getMembers());
     }
 }

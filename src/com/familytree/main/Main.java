@@ -1,66 +1,110 @@
-//package com.familytree.main;
-//
-//import com.familytree.file.FileHandler;
-//import com.familytree.file.FileOperations;
-//import com.familytree.model.Gender;
-//import com.familytree.model.Human;
-//import com.familytree.model.FamilyTree;
-//
-//import java.io.File;
-//import java.time.LocalDate;
-//import java.util.Comparator;
-
 package com.familytree.main;
 
 import com.familytree.model.Gender;
 import com.familytree.model.Human;
 import com.familytree.model.FamilyTree;
+import com.familytree.file.FileHandler;
 import com.familytree.presenter.FamilyTreePresenter;
+import com.familytree.service.FamilyTreeService;
 import com.familytree.view.ConsoleFamilyTreeView;
 import com.familytree.view.FamilyTreeView;
 
+import java.time.LocalDate;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        File dataDir = new File("data");
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
-        }
-        Human mother = new Human("Aня", "Якин", Gender.Female, LocalDate.of(1965, 1, 15), null, "USSR", "Москва", "Учитель", null, null);
-        Human father = new Human("Олег", "Якин", Gender.Male, LocalDate.of(1960, 3, 22), null, "USSR", "Владивосток", "Инженер", null, null);
-        Human child = new Human("Mиша", "Якин", Gender.Male, LocalDate.of(1990, 5, 15), null, "Russia", "Казань", "Врач", mother, father);
+        // Создаем семейное древо, файловый обработчик и сервис
+        FamilyTree<Human> familyTree = new FamilyTree<>();
+        FileHandler<FamilyTree<Human>> fileHandler = new FileHandler<>();
+        FamilyTreeService service = new FamilyTreeService(familyTree, fileHandler);
+
+        // Создаем вид (консоль) и презентер
+        FamilyTreeView view = new ConsoleFamilyTreeView();
+        FamilyTreePresenter presenter = new FamilyTreePresenter(service, view);
+
+        // Пример добавления данных
+        Human mother = new Human("Anna", "Smith", Gender.Female, LocalDate.of(1965, 1, 15), null, "USSR", "Москва", "Teacher", null, null);
+        Human father = new Human("Oleg", "Yakin", Gender.Male, LocalDate.of(1960, 3, 22), null, "USSR", "Владивосток", "Engineer", null, null);
+        Human child = new Human("Misha", "Yakin", Gender.Male, LocalDate.of(1990, 5, 15), null, "Russia", "Казань", "Doctor", mother, father);
 
         mother.setId(1L);
         father.setId(2L);
         child.setId(3L);
 
-        mother.getChildren().add(child);
-        father.getChildren().add(child);
+        presenter.addHuman(mother);
+        presenter.addHuman(father);
+        presenter.addHuman(child);
+        presenter.createRelationship(mother, child);
+        presenter.createRelationship(father, child);
 
-        FileOperations fileHandler = new FileHandler();
-        FamilyTree familyTree = new FamilyTree(fileHandler);
+        // Интерактивное меню
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
 
-        familyTree.addElement(mother);
-        familyTree.addElement(father);
-        familyTree.addElement(child);
+        while (running) {
+            System.out.println("\nВыберите действие:");
+            System.out.println("1. Показать семейное древо");
+            System.out.println("2. Добавить человека");
+            System.out.println("3. Установить родственную связь");
+            System.out.println("4. Сортировать по имени");
+            System.out.println("5. Сортировать по дате рождения");
+            System.out.println("6. Сохранить в файл");
+            System.out.println("7. Загрузить из файла");
+            System.out.println("0. Выход");
+            System.out.print("Ваш выбор: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
 
-        familyTree.printAllElements();
+            switch (choice) {
+                case 1:
+                    presenter.displayFamilyTree();
+                    break;
+                case 2:
+                    System.out.print("Введите имя: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Введите фамилию: ");
+                    String surname = scanner.nextLine();
+                    System.out.print("Введите пол (MALE/FEMALE): ");
+                    Gender gender = Gender.valueOf(scanner.nextLine().toUpperCase());
+                    System.out.print("Введите дату рождения (YYYY-MM-DD): ");
+                    LocalDate birthDate = LocalDate.parse(scanner.nextLine());
+                    Human newHuman = new Human(name, surname, gender, birthDate, null, "", "", "", null, null);
+                    presenter.addHuman(newHuman);
+                    break;
+                case 3:
+                    System.out.print("Введите ID родителя: ");
+                    long parentId = scanner.nextLong();
+                    System.out.print("Введите ID ребенка: ");
+                    long childId = scanner.nextLong();
+                    Human parent = familyTree.findById(parentId);
+                    Human childToLink = familyTree.findById(childId);
+                    presenter.createRelationship(parent, childToLink);
+                    break;
+                case 4:
+                    presenter.sortByName();
+                    break;
+                case 5:
+                    presenter.sortByBirthDate();
+                    break;
+                case 6:
+                    System.out.print("Введите имя файла для сохранения: ");
+                    String saveFileName = scanner.nextLine();
+                    presenter.saveToFile(saveFileName);
+                    break;
+                case 7:
+                    System.out.print("Введите имя файла для загрузки: ");
+                    String loadFileName = scanner.nextLine();
+                    presenter.loadFromFile(loadFileName);
+                    break;
+                case 0:
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Неверный выбор, попробуйте снова.");
+            }
+        }
 
-        System.out.println("\nСортировка по имени:");
-        familyTree.sortByName(Comparator.comparing(Human::getName));
-        familyTree.printAllElements();
-
-        System.out.println("\nСортировка по дате рождения:");
-        familyTree.sortByBirthDate(Comparator.comparing(Human::getBirthDate));
-        familyTree.printAllElements();
-
-        String filename = "data/family_tree.ser";
-
-        familyTree.saveToFile(filename);
-
-        FamilyTree<Human> loadedFamilyTree = new FamilyTree<>(fileHandler);
-        //loadedFamilyTree.loadFromFile(filename);
-
-
-       loadedFamilyTree.printAllElements();
+        scanner.close();
     }
 }

@@ -4,6 +4,7 @@ import com.familytree.model.Human;
 
 import java.io.*;
 import java.util.List;
+import java.util.Optional;
 
 public class FileHandler<T> implements FileOperations<T> {
     @Override
@@ -23,5 +24,8 @@ public class FileHandler<T> implements FileOperations<T> {
             System.err.println("Error loading family tree from file: " + e.getMessage());
         }
         return null;
+    }
+
+    public Optional<T> load(String fileName) {
     }
 }

@@ -52,4 +52,7 @@ public class FamilyTree<T> implements Iterable<T>, Serializable {
     public void sortByBirthDate(Comparator<T> comparator) {
         Collections.sort(elements, comparator);
     }
+
+    public T findById(long parentId) {
+    }
 }
