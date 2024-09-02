@@ -1,17 +1,18 @@
 package com.familytree.service;
 
 import com.familytree.model.FamilyTree;
+import com.familytree.model.Gender;
 import com.familytree.model.Human;
-import com.familytree.file.FileHandler;
+import com.familytree.file.FileHandlerInterface;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class FamilyTreeService {
     private FamilyTree<Human> familyTree;
-    private FileHandler<FamilyTree<Human>> fileHandler;
+    private FileHandlerInterface<FamilyTree<Human>> fileHandler;
 
-    public FamilyTreeService(FamilyTree<Human> familyTree, FileHandler<FamilyTree<Human>> fileHandler) {
+    public FamilyTreeService(FamilyTree<Human> familyTree, FileHandlerInterface<FamilyTree<Human>> fileHandler) {
         this.familyTree = familyTree;
         this.fileHandler = fileHandler;
     }
@@ -23,7 +24,7 @@ public class FamilyTreeService {
     public void createRelationship(Human parent, Human child) {
         if (parent != null && child != null) {
             parent.getChildren().add(child);
-            if (parent.getGender() == Gender.Famele) {
+            if (parent.getGender() == Gender.Female) {
                 child.setMother(parent);
             } else {
                 child.setFather(parent);
@@ -39,22 +40,22 @@ public class FamilyTreeService {
         familyTree.sortByBirthDate();
     }
 
-    public void saveToFile(String fileName) {
+    public boolean saveToFile(String fileName) {
         try {
             fileHandler.save(familyTree, fileName);
-            System.out.println("Данные успешно сохранены в файл " + fileName);
+            return true;
         } catch (IOException e) {
-            System.out.println("Ошибка при сохранении файла: " + e.getMessage());
+            return false;
         }
     }
 
-    public void loadFromFile(String fileName) {
+    public boolean loadFromFile(String fileName) {
         try {
             Optional<FamilyTree<Human>> loadedTree = fileHandler.load(fileName);
             loadedTree.ifPresent(tree -> familyTree = tree);
-            System.out.println("Данные успешно загружены из файла " + fileName);
+            return true;
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Ошибка при загрузке файла: " + e.getMessage());
+            return false;
         }
     }
 
